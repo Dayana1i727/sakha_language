@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="ru-Cl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Саха Тыл — учим якутский язык</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232b3a5e'/%3E%3Cpath d='M32 50V26M32 26c-6 0-9-4-9-8s4-4 4-1 5 4 5-2 5-4 5 2 4 1 4 1 5-4 9-4' stroke='%23fff' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* ---------- fonts ---------- */
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url(data:font/woff2;base64,{{FONT_CYR}}) format('woff2');
+  unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url(data:font/woff2;base64,{{FONT_LAT}}) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+
+/* ---------- tokens ---------- */
+:root{
+  --bg:#eef1f8;
+  --bg-grad:radial-gradient(1200px 600px at 85% -10%, #e4ebfb 0%, rgba(228,235,251,0) 60%), radial-gradient(900px 500px at -5% 100%, #e8eefb 0%, rgba(232,238,251,0) 55%);
+  --side:rgba(255,255,255,.72);
+  --card:#ffffff;
+  --card-2:#f5f8fe;
+  --ink:#1f2b47;
+  --ink-2:#4a5878;
+  --muted:#7b87a3;
+  --line:#e7ecf6;
+  --blue:#4a6bb5;
+  --blue-soft:#e7eefb;
+  --navy:#2b3a5e;
+  --shadow:0 10px 30px -18px rgba(35,52,90,.35), 0 2px 6px -4px rgba(35,52,90,.18);
+  --shadow-sm:0 6px 18px -14px rgba(35,52,90,.4);
+  --radius:22px;
+  --chip:#eef3fc;
+}
+html[data-theme="dark"]{
+  --bg:#101728;
+  --bg-grad:radial-gradient(1200px 600px at 85% -10%, #1b2540 0%, rgba(27,37,64,0) 60%), radial-gradient(900px 500px at -5% 100%, #182136 0%, rgba(24,33,54,0) 55%);
+  --side:rgba(26,34,54,.82);
+  --card:#1a2237;
+  --card-2:#1f2941;
+  --ink:#e9eefb;
+  --ink-2:#c3cde4;
+  --muted:#8d9ab7;
+  --line:#26304a;
+  --blue:#88a5ea;
+  --blue-soft:#243252;
+  --navy:#2f4270;
+  --shadow:0 14px 34px -20px rgba(0,0,0,.8), 0 2px 8px -4px rgba(0,0,0,.5);
+  --shadow-sm:0 8px 20px -14px rgba(0,0,0,.7);
+  --chip:#222d47;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:'Montserrat','Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);background-image:var(--bg-grad);background-attachment:fixed;
+  color:var(--ink);-webkit-font-smoothing:antialiased;
+  transition:background-color .35s ease,color .35s ease;
+}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:#c8d8f6;color:#1f2b47}
+*{scrollbar-width:thin;scrollbar-color:#c7d3e9 transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#ccd7ea;border:3px solid transparent;background-clip:content-box;border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:#b5c4e0;background-clip:content-box}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);gap:20px;padding:18px;min-height:100vh;max-width:1560px;margin:0 auto}
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  position:sticky;top:18px;align-self:start;height:calc(100vh - 36px);
+  background:var(--side);border:1px solid rgba(255,255,255,.7);border-radius:26px;
+  box-shadow:var(--shadow);backdrop-filter:blur(14px);
+  display:flex;flex-direction:column;padding:22px 14px 0;overflow:hidden;
+  transition:background .35s ease,border-color .35s ease;
+}
+html[data-theme="dark"] .sidebar{border-color:rgba(255,255,255,.05)}
+.brand{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 6px 20px;text-align:center}
+.brand-orn{width:66px;height:auto;opacity:.95}
+.brand-title{font-size:25px;font-weight:800;line-height:1.05;letter-spacing:.2px;color:var(--ink);margin-top:6px}
+.brand-sub{font-size:11px;line-height:1.45;color:var(--muted);font-weight:500;margin-top:4px}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;
+  font-size:14px;font-weight:500;color:var(--ink-2);transition:background .2s,color .2s,transform .2s;
+  text-align:left;width:100%;
+}
+.nav-item svg{width:19px;height:19px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.nav-item:hover{background:var(--card-2);color:var(--ink)}
+.nav-item.active{background:var(--blue-soft);color:var(--ink);font-weight:600}
+html[data-theme="dark"] .nav-item.active{color:#fff}
+.nav-item.active svg{opacity:1;stroke-width:1.85}
+.side-art{margin-top:auto;position:relative;height:190px;pointer-events:none}
+.side-art img{position:absolute;left:-14px;right:-14px;bottom:0;width:calc(100% + 28px);opacity:.95}
+html[data-theme="dark"] .side-art img{opacity:.22}
+
+/* ---------- main / topbar ---------- */
+.main{min-width:0;display:flex;flex-direction:column;gap:18px}
+.topbar{display:flex;align-items:center;gap:14px}
+.search{
+  flex:1;display:flex;align-items:center;gap:10px;height:48px;padding:0 20px;
+  background:var(--card);border-radius:999px;box-shadow:var(--shadow-sm);border:1px solid transparent;
+  transition:border-color .2s,box-shadow .25s,background .35s;
+}
+.search:focus-within{border-color:#c6d5f1;box-shadow:0 0 0 4px rgba(74,107,181,.1)}
+.search svg{width:19px;height:19px;stroke:var(--muted);fill:none;stroke-width:1.9;flex:none}
+.search input{flex:1;border:0;background:none;outline:none;font:inherit;font-size:14px;color:var(--ink)}
+.search input::placeholder{color:var(--muted)}
+.icon-btn{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:var(--card);box-shadow:var(--shadow-sm);color:var(--ink-2);transition:transform .25s,background .3s,color .2s;
+}
+.icon-btn:hover{transform:translateY(-1px) rotate(-8deg);color:var(--ink)}
+.icon-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--card);box-shadow:var(--shadow-sm);display:grid;place-items:center;color:#8ea0c4;transition:transform .2s}
+.avatar:hover{transform:translateY(-1px)}
+.avatar svg{width:22px;height:22px;fill:currentColor}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;transition:background .35s}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.card-head h3{margin:0;font-size:17px;font-weight:700;letter-spacing:.1px}
+.link{font-size:12.5px;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px;font-weight:500;transition:color .2s,gap .2s,opacity .2s;opacity:.85}
+.link:hover{color:var(--blue);gap:9px;opacity:1}
+.link svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- home grid ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 342px;gap:20px;align-items:start}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+
+/* hero */
+.hero{
+  position:relative;border-radius:26px;overflow:hidden;min-height:326px;
+  display:flex;flex-direction:column;justify-content:center;padding:38px 44px;
+  box-shadow:var(--shadow);isolation:isolate;
+}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(100deg,rgba(243,246,253,.78) 0%,rgba(243,246,253,.45) 42%,rgba(243,246,253,.05) 72%);
+}
+html[data-theme="dark"] .hero::after{background:linear-gradient(100deg,rgba(12,18,32,.82) 0%,rgba(12,18,32,.55) 42%,rgba(12,18,32,.25) 72%)}
+.hero h1{
+  margin:0 0 14px;font-size:clamp(26px,3.1vw,42px);line-height:1.12;font-weight:700;
+  letter-spacing:-.4px;max-width:12.5em;color:var(--ink);text-wrap:balance;
+}
+.hero .heart{display:inline-block;width:.85em;height:.85em;vertical-align:-.05em;stroke:var(--ink);fill:none;stroke-width:2;margin-left:.1em}
+.hero p{margin:0 0 26px;font-size:15.5px;font-weight:500;color:var(--ink-2);max-width:30em}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:999px;
+  background:var(--navy);color:#fff;font-size:14.5px;font-weight:600;letter-spacing:.1px;
+  box-shadow:0 12px 24px -14px rgba(28,42,74,.9);transition:transform .22s,box-shadow .22s,background .22s;
+  align-self:flex-start;
+}
+html[data-theme="dark"] .btn{background:#3c568f;box-shadow:0 12px 24px -14px rgba(0,0,0,.9)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(28,42,74,.85)}
+.btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .22s}
+.btn:hover svg{transform:translateX(4px)}
+
+/* lessons */
+.lessons-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.lesson{text-align:left;display:flex;flex-direction:column;gap:9px;width:100%;padding:0;border-radius:16px}
+.thumb{position:relative;height:98px;border-radius:15px;overflow:hidden;background:var(--card-2)}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .55s cubic-bezier(.2,.7,.3,1),filter .3s}
+.lesson:hover .thumb img{transform:scale(1.07)}
+html[data-theme="dark"] .thumb img{filter:brightness(.82) saturate(.95)}
+.chip{
+  position:absolute;top:8px;left:8px;padding:4px 10px;border-radius:999px;
+  background:rgba(255,255,255,.94);color:#26314e;font-size:11px;font-weight:600;letter-spacing:.1px;
+  box-shadow:0 4px 10px -6px rgba(20,32,60,.6);backdrop-filter:blur(4px)
+}
+.lesson h4{margin:0;font-size:13.5px;line-height:1.32;font-weight:600;color:var(--ink);min-height:2.6em}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);font-weight:500}
+.meta span{display:inline-flex;align-items:center;gap:5px}
+.meta svg.clock{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.go{
+  width:26px;height:26px;border-radius:50%;background:var(--chip);color:#5b7ac0;
+  display:grid;place-items:center;transition:background .22s,color .22s,transform .22s;flex:none
+}
+.go svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.lesson:hover .go{background:var(--blue);color:#fff;transform:translateX(2px)}
+html[data-theme="dark"] .go{color:#a8bdf0}
+
+/* new words */
+.words-body{display:grid;grid-template-columns:108px minmax(0,1fr);gap:16px;align-items:stretch}
+.words-pic{border-radius:16px;overflow:hidden;position:relative;min-height:150px;background:var(--card-2)}
+.words-pic img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+html[data-theme="dark"] .words-pic img{filter:brightness(.85)}
+.word-list{display:flex;flex-direction:column;justify-content:space-between;gap:2px}
+.word{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) 26px;align-items:center;gap:10px;
+  padding:5px 0;border-bottom:1px solid var(--line);font-size:13px;
+}
+.word:last-child{border-bottom:0}
+.word b{font-weight:600;color:var(--ink)}
+.word em{font-style:normal;color:var(--muted);font-size:12.5px;text-align:left}
+.speak{
+  width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#6d86c6;
+  background:var(--chip);transition:background .2s,color .2s,transform .2s;
+}
+.speak:hover{background:var(--blue);color:#fff;transform:scale(1.06)}
+.speak svg{width:13px;height:13px;fill:currentColor}
+
+/* achievements */
+.ach-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ach{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.ach-icon{
+  width:60px;height:60px;border-radius:19px;display:grid;place-items:center;font-size:25px;
+  background:var(--card-2);transition:transform .25s,box-shadow .25s;
+}
+.ach:hover .ach-icon{transform:translateY(-3px) rotate(-4deg)}
+.ach-icon.b1{background:#e6eefc;color:#4a6bb5}
+.ach-icon.b1 svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ach-icon.b2{background:#fdf3e2;color:#f0a93c}
+.ach-icon.b3{background:#fdeceb;color:#ef7a4b}
+.ach-icon.b4{background:#fdf7e3;color:#e0ab2c}
+.ach-icon svg{width:27px;height:27px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ach-icon svg.fill{fill:currentColor;stroke:none}
+.ach span{font-size:11px;line-height:1.3;color:var(--ink-2);font-weight:500}
+.ach.locked{opacity:.45}
+
+/* progress card */
+.progress-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center}
+.donut{position:relative;width:104px;height:104px;flex:none}
+.donut svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut .track{fill:none;stroke:var(--line);stroke-width:9}
+.donut .bar{fill:none;stroke:url(#donutGrad);stroke-width:9;stroke-linecap:round;stroke-dasharray:264;stroke-dashoffset:264;transition:stroke-dashoffset 1.4s cubic-bezier(.3,.8,.3,1)}
+.donut b{position:absolute;inset:0;display:grid;place-items:center;font-size:23px;font-weight:700;letter-spacing:-.5px}
+.lvl{
+  background:var(--blue-soft);border-radius:16px;padding:11px 14px;text-align:left;
+}
+.lvl small{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px}
+.lvl b{font-size:17px;font-weight:700}
+.streak{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);font-weight:500;margin:14px 0 12px}
+.streak .flame{width:16px;height:16px;flex:none;fill:#f2814a;stroke:none}
+.streak b{font-weight:700;color:var(--ink)}
+.points{
+  display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-radius:14px;
+  background:var(--card-2);font-size:12px;color:var(--ink-2);font-weight:500;text-align:center;
+}
+.points b{font-weight:700;color:var(--ink)}
+.points .star-ico{width:16px;height:16px;fill:#f0b23c;flex:none}
+
+/* phrase of day */
+.phrase{
+  position:relative;overflow:hidden;border-radius:var(--radius);padding:22px 24px 24px;
+  background:linear-gradient(140deg,#e9f0fd 0%,#dde8fa 55%,#d6e3f8 100%);
+  box-shadow:var(--shadow);min-height:232px;
+}
+html[data-theme="dark"] .phrase{background:linear-gradient(140deg,#1e2942 0%,#22304f 55%,#26365a 100%)}
+.phrase h3{margin:0 0 14px;font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--ink)}
+.phrase .sakha{margin:0 0 10px;font-size:20px;line-height:1.25;font-weight:700;max-width:9.5em;letter-spacing:-.2px}
+.phrase .tr{margin:0;font-size:13px;color:var(--ink-2);font-weight:500;opacity:.9}
+.phrase .cat{position:absolute;right:6px;bottom:0;width:112px;filter:drop-shadow(0 8px 12px rgba(40,60,100,.12))}
+.phrase .speak{position:absolute;left:24px;bottom:24px;width:34px;height:34px;background:rgba(255,255,255,.85);color:#4a6bb5;box-shadow:0 6px 14px -8px rgba(30,50,90,.5)}
+html[data-theme="dark"] .phrase .speak{background:rgba(255,255,255,.12);color:#cfdcf8}
+.phrase .speak:hover{background:var(--blue);color:#fff}
+.waves{position:absolute;left:-20px;bottom:-6px;width:240px;opacity:.5;pointer-events:none}
+html[data-theme="dark"] .waves{opacity:.25}
+
+/* promo */
+.promo{
+  position:relative;border-radius:var(--radius);overflow:hidden;min-height:196px;
+  padding:22px 24px;display:flex;flex-direction:column;justify-content:center;gap:16px;
+  box-shadow:var(--shadow);isolation:isolate;
+}
+.promo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.promo::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(120deg,rgba(24,34,60,.82),rgba(30,44,78,.5) 70%,rgba(40,52,84,.32))}
+.promo h4{margin:0;font-size:18px;line-height:1.35;font-weight:600;color:#fff;max-width:11em;letter-spacing:-.1px}
+.promo .btn{background:rgba(255,255,255,.15);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.35);padding:11px 20px;font-size:13px;box-shadow:none}
+.promo .btn:hover{background:rgba(255,255,255,.26)}
+
+/* ---------- other pages ---------- */
+.page{display:none;animation:fade .35s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:2px 4px 16px;flex-wrap:wrap}
+.page-head h2{margin:0;font-size:26px;font-weight:700;letter-spacing:-.4px}
+.page-head p{margin:6px 0 0;font-size:13px;color:var(--muted);font-weight:500}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter{padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--ink-2);background:var(--card);box-shadow:var(--shadow-sm);transition:background .2s,color .2s,transform .2s}
+.filter:hover{transform:translateY(-1px)}
+.filter.active{background:var(--navy);color:#fff}
+html[data-theme="dark"] .filter.active{background:#3c568f}
+.grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.pbar{height:6px;border-radius:999px;background:var(--line);overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#8aa6e6,#4a6bb5);transition:width 1s ease}
+.lesson-card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:11px}
+.lesson-card .thumb{height:118px}
+.lesson-card h4{min-height:0}
+.lesson-card .pbar{margin-top:2px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--blue-soft);color:var(--ink-2);font-size:11px;font-weight:600}
+.stat{display:flex;flex-direction:column;gap:6px}
+.stat .num{font-size:30px;font-weight:700;letter-spacing:-1px;display:flex;align-items:center;gap:8px}
+.stat .flame{width:22px;height:22px;fill:#f2814a}
+.badge-ico{width:13px;height:13px;fill:#f0b23c}
+.stat .cap{font-size:12px;color:var(--muted);font-weight:500}
+.bars{display:flex;align-items:flex-end;gap:10px;height:120px;margin-top:6px}
+.bars div{flex:1;border-radius:8px 8px 4px 4px;background:var(--blue-soft);position:relative;transition:background .2s}
+.bars div.on{background:linear-gradient(180deg,#8ea9e8,#4a6bb5)}
+.bars span{position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-size:10.5px;color:var(--muted);font-weight:600}
+.days{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.day{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;font-size:11px;font-weight:600;background:var(--card-2);color:var(--muted)}
+.day.done{background:var(--blue-soft);color:var(--blue)}
+.day.today{background:var(--navy);color:#fff}
+html[data-theme="dark"] .day.today{background:#3c568f}
+.skill{display:grid;grid-template-columns:150px minmax(0,1fr) 44px;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+.skill:last-child{border-bottom:0}
+.skill b{font-weight:600;font-size:13px}
+.skill i{font-style:normal;color:var(--muted);font-size:12.5px;text-align:right;font-weight:600}
+.badge-tile{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:16px 10px;border-radius:18px;background:var(--card);box-shadow:var(--shadow);transition:transform .22s,box-shadow .22s}
+.badge-tile:hover{transform:translateY(-3px)}
+.badge-tile .ico{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:var(--card-2);color:#7f8fb2}
+.badge-tile .ico svg{width:27px;height:27px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.badge-tile .ico svg.fill{fill:currentColor;stroke:none}
+.badge-tile b{font-size:12.5px;font-weight:600}
+.badge-tile small{font-size:11px;color:var(--muted);line-height:1.35;font-weight:500}
+.badge-tile.locked{opacity:.55}
+.badge-tile.locked .ico{filter:grayscale(1)}
+.fav-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) 34px 34px;align-items:center;gap:14px;padding:13px 4px;border-bottom:1px solid var(--line);font-size:14px}
+.fav-row:last-child{border-bottom:0}
+.fav-row b{font-weight:600}
+.fav-row em{font-style:normal;color:var(--muted);font-size:13px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--line)}
+.set-row:last-child{border-bottom:0}
+.set-row .txt b{display:block;font-size:13.5px;font-weight:600;margin-bottom:3px}
+.set-row .txt small{font-size:11.5px;color:var(--muted);font-weight:500}
+.switch{width:46px;height:26px;border-radius:999px;background:var(--line);position:relative;transition:background .25s;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(20,35,70,.25);transition:transform .25s}
+.switch.on{background:var(--blue)}
+.switch.on::after{transform:translateX(20px)}
+select.sel{font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-2);background:var(--card-2);border:0;border-radius:12px;padding:10px 12px;outline:none}
+.ghost{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;background:var(--card-2);color:var(--ink-2);font-size:12.5px;font-weight:600;transition:background .2s,color .2s}
+.ghost:hover{background:var(--blue-soft);color:var(--ink)}
+.ghost .play{width:12px;height:12px;fill:currentColor}
+.empty{padding:44px 10px;text-align:center;color:var(--muted);font-size:13.5px;font-weight:500}
+.empty .em{width:26px;height:26px;margin:0 auto 10px;display:block;stroke:currentColor;fill:none;stroke-width:1.7;opacity:.7}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);
+  background:var(--navy);color:#fff;padding:13px 22px;border-radius:999px;font-size:13px;font-weight:500;
+  box-shadow:0 18px 40px -18px rgba(20,32,60,.9);opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:99;
+  display:flex;align-items:center;gap:9px;max-width:calc(100vw - 40px);text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+html[data-theme="dark"] .toast{background:#3c568f}
+
+/* ---------- responsive ---------- */
+@media (max-width:1240px){
+  .grid{grid-template-columns:minmax(0,1fr) 310px}
+  .lessons-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-4{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:1040px){
+  .app{grid-template-columns:84px minmax(0,1fr);padding:14px;gap:14px}
+  .sidebar{padding:18px 10px 0;align-items:center}
+  .brand-title,.brand-sub,.brand-orn{display:none}
+  .brand{height:0;padding:0}
+  .nav-item{justify-content:center;padding:13px 0;border-radius:16px}
+  .nav-item span{display:none}
+  .side-art{display:none}
+  .grid{grid-template-columns:1fr}
+  .col-side{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding:12px;gap:12px}
+  .sidebar{position:sticky;top:0;z-index:30;height:auto;flex-direction:row;align-items:center;padding:8px 10px;border-radius:20px}
+  .brand{display:flex;flex-direction:row;align-items:center;gap:8px;height:auto;padding:0 6px 0 2px}
+  .brand-orn{display:block;width:30px}
+  .brand-title{display:block;font-size:12px;line-height:1.05;margin-top:0;text-align:left}
+  .brand-sub{display:none}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav-item{padding:10px 12px}
+  .nav-item span{display:none}
+  .hero{padding:26px 24px;min-height:290px}
+  .lessons-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .col-side{grid-template-columns:1fr}
+  .card{padding:18px 18px}
+  .topbar{gap:8px}
+  .search{height:44px;padding:0 16px}
+  .icon-btn,.avatar{width:40px;height:40px}
+  .words-body{grid-template-columns:88px minmax(0,1fr)}
+  .skill{grid-template-columns:100px minmax(0,1fr) 40px;gap:10px}
+  .fav-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 30px;font-size:13px}
+  .fav-row .fav-del{display:none}
+  .grid-4{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .phrase .cat{width:92px}
+  .phrase{min-height:210px}
+}
+@media (max-width:480px){
+  .lessons-grid{gap:10px}
+  .thumb{height:82px}
+  .lesson h4{font-size:12px;min-height:3.1em}
+  .lesson-card .thumb{height:92px}
+  .hero h1{font-size:23px}
+  .hero p{font-size:13.5px;margin-bottom:20px}
+  .card{padding:16px 14px}
+  .ach-grid{gap:6px}
+  .ach-icon{width:52px;height:52px;border-radius:16px}
+  .ach-icon svg{width:23px;height:23px}
+  .grid-2{gap:12px}
+  .col,.grid{gap:12px}
+}
+@media (max-width:420px){
+  .brand-title{display:none}
+  .ach-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .days{gap:6px}
+  .day{width:28px;height:28px;border-radius:9px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="donutGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#93aeeb"/><stop offset="100%" stop-color="#4666ab"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.3 12 3.5l8.5 6.8V20a1 1 0 0 1-1 1h-4.6v-6H9.1v6H4.5a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.3C10.4 4.9 8.2 4.2 5 4.2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1c3.2 0 5.4.7 7 2.1 1.6-1.4 3.8-2.1 7-2.1a1 1 0 0 0 1-1v-12a1 1 0 0 0-1-1c-3.2 0-5.4.7-7 2.1Z"/><path d="M12 6.3v14"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V9M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4h10v4.5a5 5 0 0 1-10 0Z"/><path d="M7 5.5H4.5V7a3.5 3.5 0 0 0 3.2 3.5M17 5.5h2.5V7a3.5 3.5 0 0 1-3.2 3.5"/><path d="M12 13.5V17M8.5 20h7M10 20l.6-3h2.8l.6 3"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.6 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8L3.5 9.8l5.9-.9z"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 4.6 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 11.5 4a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 19.4 11a2 2 0 1 1 0 4Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="4.2"/><path d="M4.5 20.5c.6-3.7 3.7-5.8 7.5-5.8s6.9 2.1 7.5 5.8Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4.5 12h15M13.5 6l6 6-6 6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 1.8"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.3C7 17 3.8 13.4 3.8 9.9A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 8.2 3.3c0 3.5-3.2 7.1-8.2 10.4Z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 5.5 6.8 9H3.5v6h3.3L11 18.5z"/><path d="M15 9.2a4 4 0 0 1 0 5.6M17.7 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10" width="15" height="10.5" rx="2.4"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3s5.2 3.9 5.2 8.6A5.2 5.2 0 0 1 12 16.8a5.2 5.2 0 0 1-5.2-5.2C6.8 10.4 8.4 9.1 9.2 7.9c.4 1.4 1.2 2 1.2 2C10 7.5 12 3 12 3Z"/><path d="M12 20.6c3.5 0 6-1.6 6-3.6 0 0-1.4 1.2-3 1.2s-3-1.2-3-1.2-1.4 1.2-3 1.2-3-1.2-3-1.2c0 2 2.5 3.6 6 3.6Z" opacity=".55"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3.4 8.6 7.2 12l4.8-6.4L16.8 12l3.8-3.4-1.4 9.6a1.4 1.4 0 0 1-1.4 1.2H6.2a1.4 1.4 0 0 1-1.4-1.2Z"/><path d="M3.4 8.6 2.8 6M20.6 8.6l.6-2.6M12 3.4V2"/></symbol>
+  <symbol id="i-star-fill" viewBox="0 0 24 24"><path d="m12 3.2 2.8 5.6 6.2 1-4.5 4.3 1.1 6.1-5.6-3-5.6 3 1.1-6.1L3 9.8l6.2-1z"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M4.6 19.4C3 12.4 7.6 5.2 19.4 4.6c.6 11.8-6.6 16.4-13.6 14.8Z"/><path d="M4.6 19.4C7 15.2 10.4 11.8 15 9.4"/></symbol>
+  <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M4.4 14v-2a7.6 7.6 0 0 1 15.2 0v2"/><rect x="2.6" y="13.4" width="4.4" height="6.4" rx="2.2"/><rect x="17" y="13.4" width="4.4" height="6.4" rx="2.2"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2M12 3.4c2.4 2.4 3.6 5.3 3.6 8.6S14.4 18.2 12 20.6c-2.4-2.4-3.6-5.3-3.6-8.6S9.6 5.8 12 3.4Z"/></symbol>
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M7.4 3.6h9.2l3.8 5.2L12 20.8 3.6 8.8Z"/><path d="M3.6 8.8h16.8M9.6 8.8 12 20.8l2.4-12M7.4 3.6 9.6 8.8M16.6 3.6 14.4 8.8"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 4.8 19 12 8 19.2z"/></symbol>
+  <symbol id="i-abc" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M11.4 2.6 3.8 21.4h3.7l1.5-3.9h6l1.5 3.9h3.7L12.6 2.6Zm.6 5.9 2 5.3h-4Z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.6" width="11" height="18.8" rx="3"/><path d="M10.6 5.6h2.8"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v11M8 10.5l4 4 4-4M4.5 17v2.5a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V17"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20.4 4.4v4.2h-4.2"/></symbol>
+  <symbol id="i-translate" viewBox="0 0 24 24"><path d="M4 5.5h8M8 3.6v1.9M10.2 5.5c0 4-2.6 7.2-6.2 8.6"/><path d="M6.2 9.3c.9 2 2.6 3.6 4.8 4.5"/><path d="M13 20.4l3.4-8.6 3.4 8.6M14.3 17.4h4.4"/></symbol>
+  <symbol id="i-fact" viewBox="0 0 24 24"><path d="M9.4 17.4h5.2M10.4 20.6h3.2"/><path d="M12 3.2a5.9 5.9 0 0 0-3.5 10.7c.6.4 1 1.1 1 1.8v.7h5v-.7c0-.7.4-1.4 1-1.8A5.9 5.9 0 0 0 12 3.2Z"/></symbol>
+  <symbol id="i-dict" viewBox="0 0 24 24"><path d="M5 4.5h9.5a2 2 0 0 1 2 2V20a1.6 1.6 0 0 1-1.6-1.6H5z"/><path d="M20.5 6v12.4a1.6 1.6 0 0 1-1.6 1.6H5"/><path d="M9 9.5h4.5"/></symbol>
+</svg>
+
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img class="brand-orn" src="{{ORN}}" alt="Якутский орнамент">
+      <div class="brand-title">Саха<br>Тыл</div>
+      <div class="brand-sub">Изучай якутский<br>язык с нами &#9825;</div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-go="home"><svg><use href="#i-home"/></svg><span>Главная</span></button>
+      <button class="nav-item" data-go="lessons"><svg><use href="#i-book"/></svg><span>Уроки</span></button>
+      <button class="nav-item" data-go="words"><svg><use href="#i-dict"/></svg><span>Новые слова</span></button>
+      <button class="nav-item" data-go="dict"><svg><use href="#i-translate"/></svg><span>Словарь</span></button>
+      <button class="nav-item" data-go="progress"><svg><use href="#i-chart"/></svg><span>Прогресс</span></button>
+      <button class="nav-item" data-go="achieve"><svg><use href="#i-trophy"/></svg><span>Достижения</span></button>
+      <button class="nav-item" data-go="alphabet"><svg><use href="#i-abc"/></svg><span>Алфавит</span></button>
+      <button class="nav-item" data-go="facts"><svg><use href="#i-fact"/></svg><span>Факты</span></button>
+      <button class="nav-item" data-go="widget"><svg><use href="#i-phone"/></svg><span>Виджет</span></button>
+      <button class="nav-item" data-go="settings"><svg><use href="#i-gear"/></svg><span>Настройки</span></button>
+    </nav>
+    <div class="side-art"><img src="{{SCENE}}" alt=""></div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <svg><use href="#i-search"/></svg>
+        <input id="search" type="search" placeholder="Поиск слов и уроков..." autocomplete="off">
+      </div>
+      <button class="icon-btn" id="themeBtn" title="Сменить тему" aria-label="Сменить тему">
+        <svg id="themeIcon"><use href="#i-moon"/></svg>
+      </button>
+      <button class="avatar" title="Профиль" aria-label="Профиль"><svg><use href="#i-user"/></svg></button>
+    </header>
+
+    <!-- ============ HOME ============ -->
+    <section class="page active" data-page="home">
+      <div class="grid">
+        <div class="col">
+          <!-- HERO -->
+          <div class="hero">
+            <img class="hero-img" src="{{HERO}}" alt="">
+            <h1>Якутский язык —<br>ближе, чем кажется
+              <svg class="heart"><use href="#i-heart"/></svg>
+            </h1>
+            <p>Учись. Говори. Открывай культуру Саха!</p>
+            <button class="btn" id="heroStart">
+              Начать обучение <svg><use href="#i-arrow"/></svg>
+            </button>
+          </div>
+
+          <!-- LESSONS -->
+          <div class="card">
+            <div class="card-head">
+              <h3>Уроки</h3>
+              <a class="link" href="#" data-go="lessons">Все уроки <svg><use href="#i-arrow"/></svg></a>
+            </div>
+            <div class="lessons-grid" id="homeLessons">
+              {{LESSON_CARDS}}
+            </div>
+            <div class="empty" id="homeEmpty" style="display:none">
+              <svg class="em"><use href="#i-search"/></svg>Ничего не нашлось — попробуй другое слово
+            </div>
+          </div>
+
+          <!-- WORDS + ACHIEVEMENTS -->
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-head">
+                <h3>Новые слова</h3>
+                <a class="link" href="#" data-go="words">Смотреть все <svg><use href="#i-arrow"/></svg></a>
+              </div>
+              <div class="words-body">
+                <div class="words-pic"><img src="{{WORDS}}" alt=""></div>
+                <div class="word-list" id="wordList">
+                  {{WORD_ROWS}}
+                </div>
+              </div>
+              <div class="empty" id="wordEmpty" style="display:none">
+                <svg class="em"><use href="#i-search"/></svg>Слово не найдено
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h3>Достижения</h3>
+                <a class="link" href="#" data-go="achieve">Все достижения <svg><use href="#i-arrow"/></svg></a>
+              </div>
+              <div class="ach-grid">
+                <div class="ach" data-ach="first">
+                  <div class="ach-icon b1"><svg><use href="#i-book"/></svg></div>
+                  <span>Первые<br>уроки</span>
+                </div>
+                <div class="ach" data-ach="week">
+                  <div class="ach-icon b2"><svg class="fill"><use href="#i-star-fill"/></svg></div>
+                  <span>Неделя<br>обучения</span>
+                </div>
+                <div class="ach" data-ach="streak">
+                  <div class="ach-icon b3"><svg class="fill"><use href="#i-flame"/></svg></div>
+                  <span>5 дней<br>подряд</span>
+                </div>
+                <div class="ach" data-ach="level">
+                  <div class="ach-icon b4"><svg class="fill"><use href="#i-crown"/></svg></div>
+                  <span>Первый<br>уровень</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <aside class="col col-side">
+          <div class="card">
+            <div class="card-head" style="margin-bottom:18px"><h3>Твой прогресс</h3></div>
+            <div class="progress-top">
+              <div class="donut">
+                <svg viewBox="0 0 100 100">
+                  <circle class="track" cx="50" cy="50" r="42"/>
+                  <circle class="bar" id="homeDonut" cx="50" cy="50" r="42" data-value="0"/>
+                </svg>
+                <b id="homePct">0%</b>
+              </div>
+              <div class="lvl"><small>Уровень</small><b id="homeLevel">Старт</b></div>
+            </div>
+            <div class="streak"><svg class="flame"><use href="#i-flame"/></svg><span id="homeStreak"><b>1 день</b> подряд</span></div>
+            <div class="points"><svg class="star-ico"><use href="#i-star-fill"/></svg><span id="homePoints"><b>+0 очков</b><br>за сегодня!</span></div>
+          </div>
+
+          <div class="phrase">
+            <svg class="waves" viewBox="0 0 240 60" fill="none" aria-hidden="true">
+              <path d="M-10 40c14-16 28-16 42 0s28 16 42 0 28-16 42 0 28 16 42 0 28-16 42 0 28 16 42 0" stroke="#a9bfe8" stroke-width="1.6" opacity=".8"/>
+              <path d="M-10 52c14-16 28-16 42 0s28 16 42 0 28-16 42 0 28 16 42 0 28-16 42 0 28 16 42 0" stroke="#b7c9ec" stroke-width="1.6" opacity=".6"/>
+            </svg>
+            <h3>Фраза дня <svg class="heart" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><use href="#i-heart"/></svg></h3>
+            <p class="sakha">Үтүө күн!</p>
+            <p class="tr">«Доброго дня!»</p>
+            <img class="cat" src="{{CAT}}" alt="Маскот — белый кот">
+            <button class="speak" data-speak="Үтүө күн" aria-label="Слушать"><svg><use href="#i-sound"/></svg></button>
+          </div>
+
+          <div class="promo">
+            <img src="{{PROMO}}" alt="">
+            <h4>Изучай якутский язык и открывай культуру Саха!</h4>
+            <button class="btn" data-toast="Регистрация скоро — пока это демо-интерфейс">
+              Начать сейчас <svg><use href="#i-arrow"/></svg>
+            </button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ LESSONS ============ -->
+    <section class="page" data-page="lessons">
+      <div class="mascot-bar">
+        <div class="mb-icon"><img src="{{MASCOT}}" alt="Кыыс Куо — символ приложения"></div>
+        <div class="mb-text">
+          <b>Саха Тыл · Кыыс Куо</b>
+          <span>Дорообо! Мин эйигин кытта үөрэнэр этим — выбери урок, и начнём с приветствий.</span>
+        </div>
+        <span class="mb-dot" title="Кыыс Куо на связи"></span>
+      </div>
+      <div class="page-head">
+        <div>
+          <h2>Уроки</h2>
+          <p>6 уроков открыто · задания подстраиваются под возраст</p>
+        </div>
+        <div class="filters">
+          <button class="filter active">Все</button>
+          <button class="filter">Лексика</button>
+          <button class="filter">Грамматика</button>
+          <button class="filter">Культура</button>
+        </div>
+      </div>
+      <div class="grid-4" id="allLessons">{{ALL_LESSON_CARDS}}</div>
+    </section>
+
+    <!-- ============ DICTIONARY (RU → SAH) ============ -->
+    <section class="page" data-page="dict">
+      <div class="page-head">
+        <div>
+          <h2>Словарь</h2>
+          <p id="dictCount">Русский → якутский · 155 слов с озвучкой</p>
+        </div>
+        <button class="ghost" id="dictClear"><svg class="ico"><use href="#i-refresh"/></svg>Сбросить</button>
+      </div>
+
+      <div class="dict-search">
+        <svg><use href="#i-search"/></svg>
+        <input id="dictQuery" type="search" placeholder="Найди слово: «вода», «мама», «уу»…" autocomplete="off">
+      </div>
+
+      <div class="filters" id="dictFilters" style="margin-bottom:16px"></div>
+
+      <div class="card dict-card">
+        <div id="dictList">
+          {{DICT_GROUPS}}
+        </div>
+        <div class="empty" id="dictEmpty" style="display:none">
+          <svg class="em"><use href="#i-search"/></svg>
+          Такого слова пока нет. Попробуй другое или посмотри список уроков.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROGRESS ============ -->
+    <section class="page" data-page="progress">
+      <div class="page-head">
+        <div>
+          <h2>Прогресс</h2>
+          <p>Твоя статистика за эту неделю</p>
+        </div>
+        <span class="badge" id="progXp"><svg class="badge-ico"><use href="#i-star-fill"/></svg>0 очков всего</span>
+      </div>
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-head"><h3>Курс</h3></div>
+          <div class="progress-top">
+            <div class="donut" style="width:96px;height:96px">
+              <svg viewBox="0 0 100 100">
+                <circle class="track" cx="50" cy="50" r="42"/>
+                <circle class="bar" id="progDonut" cx="50" cy="50" r="42" data-value="0"/>
+              </svg>
+              <b style="font-size:21px" id="progPct">0%</b>
+            </div>
+            <div class="lvl"><small>Уровень</small><b id="progLevel">Старт</b></div>
+          </div>
+          <p style="margin:14px 0 0;font-size:12px;color:var(--muted);font-weight:500" id="progText">Пройдено 0 из 6 уроков</p>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Серия</h3></div>
+          <div class="stat"><span class="num" id="progStreak">1</span><span class="cap">дней подряд — не теряй ритм!</span></div>
+          <div class="days" id="weekStrip"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Очки</h3></div>
+          <div class="stat"><span class="num" id="progPoints">+0</span><span class="cap">сегодня · цель 70 очков</span></div>
+          <div class="pbar" style="margin-top:14px"><i style="width:71%"></i></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>Активность за неделю</h3><span class="link">очки в день</span></div>
+          <div class="bars" id="weekBars"></div>
+          <div style="height:26px"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Навыки</h3></div>
+          <div id="skillList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ACHIEVEMENTS ============ -->
+    <section class="page" data-page="achieve">
+      <div class="page-head">
+        <div><h2>Достижения</h2><p id="achSub">0 из 8 открыто</p></div>
+        <span class="badge"><svg class="badge-ico" style="fill:none;stroke:#4a6bb5;stroke-width:1.8"><use href="#i-trophy"/></svg>Коллекция</span>
+      </div>
+      <div class="grid-4" id="achGrid" style="gap:16px">
+      </div>
+      <div style="display:none">
+      </div>
+    </section>
+
+    <!-- ============ WORDS ============ -->
+    <section class="page" data-page="words">
+      <div class="page-head">
+        <div><h2>Новые слова</h2><p id="wordsCount">Слова из всех уроков</p></div>
+        <div class="filters" id="wordFilters">
+          <button class="filter active" data-l="all">Все</button>
+          <button class="filter" data-l="known">Изучено <b id="knownTab">0</b></button>
+          <button class="filter" data-l="fav">Избранное</button>
+          <button class="filter" data-l="1">Урок 1</button>
+          <button class="filter" data-l="2">Урок 2</button>
+          <button class="filter" data-l="3">Урок 3</button>
+          <button class="filter" data-l="4">Урок 4</button>
+          <button class="filter" data-l="5">Урок 5</button>
+          <button class="filter" data-l="6">Урок 6</button>
+        </div>
+      </div>
+
+      <div class="card learned-card">
+        <div class="learned-ring donut">
+          <svg viewBox="0 0 100 100">
+            <circle class="track" cx="50" cy="50" r="42"/>
+            <circle class="bar" id="knownDonut" cx="50" cy="50" r="42" data-value="0"/>
+          </svg>
+          <span id="knownBig">0</span>
+        </div>
+        <div class="learned-main">
+          <div class="learned-title">Изученных слов <b id="knownOf">0 из 23</b></div>
+          <div class="learned-bars" id="learnedBars"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="wordBank"></div>
+      </div>
+    </section>
+
+    <!-- ============ LESSON PLAYER ============ -->
+    <section class="page" data-page="lesson">
+      <div class="lesson-top">
+        <button class="ghost back" data-go="lessons"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg>Уроки</button>
+        <div class="lesson-name"><b id="lesTitle">Урок</b><span id="lesSub"></span></div>
+        <span class="chip-info mode" id="modeChip">Режим</span>
+        <span class="chip-info"><svg><use href="#i-star-fill"/></svg><span id="xpTop">0</span> XP</span>
+      </div>
+      <div class="steps" id="stageSteps"></div>
+      <div class="stage-bar" id="stageBar"><i></i></div>
+      <div class="card stage-card" id="stageCard"></div>
+      <div class="stage-foot">
+        <button class="ghost" id="btnBack">Назад</button>
+        <div class="stage-count" id="stageCount"></div>
+        <button class="btn" id="btnNext">Проверить</button>
+      </div>
+    </section>
+
+    <!-- ============ ALPHABET ============ -->
+    <section class="page" data-page="alphabet">
+      <div class="page-head">
+        <div><h2>Алфавит</h2><p id="abcCount">40 букв · 8 гласных, 4 дифтонга, согласные и знаки</p></div>
+        <div class="filters" id="abcFilters">
+          <button class="filter active" data-abc="all">Все</button>
+          <button class="filter" data-abc="vowels">Гласные</button>
+          <button class="filter" data-abc="long">Долгие</button>
+          <button class="filter" data-abc="diph">Дифтонги</button>
+          <button class="filter" data-abc="cons">Согласные</button>
+        </div>
+      </div>
+
+      <div class="card abc-note">
+        <img class="abc-mascot" src="{{MASCOT_FACE}}" alt="">
+        <div>
+          <b>Нажми на букву — услышишь её название.</b>
+          <span>Якутский алфавит — кириллица плюс Ҕ ҕ, Ҥ ҥ, Ө ө, Ү ү, Һ һ и диграфы Дь дь, Нь нь. Гласные бывают краткими, долгими и дифтонгами — от долготы зависит смысл слова: <i>кыс</i> «строгать» и <i>кыыс</i> «девушка».</span>
+        </div>
+      </div>
+
+      <div id="alphabetBody"></div>
+    </section>
+
+    <!-- ============ WIDGET ============ -->
+    <section class="page" data-page="widget">
+      <div class="page-head">
+        <div><h2>Виджет на телефон</h2><p>Якутское слово с переводом на экране — меняется каждые 2 часа</p></div>
+        <span class="badge" id="wCountdown">до смены 2:00:00</span>
+      </div>
+
+      <div class="widget-wrap">
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h3>Предпросмотр</h3><span class="link" id="wLessonTag">Урок 1</span></div>
+            <div class="widget-stage">
+              <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-time">9:41</div>
+                <div class="phone-widget" id="widgetPreview"></div>
+                <div class="phone-icons"></div>
+              </div>
+              <div class="widget-sizes">
+                <div class="size-box">
+                  <div class="widget-mini" id="widgetSmall"></div>
+                  <span>малый</span>
+                </div>
+                <div class="size-box">
+                  <div class="widget-mini wide" id="widgetWide"></div>
+                  <span>средний</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="col">
+          <div class="card">
+            <div class="card-head"><h3>Слово сейчас</h3></div>
+            <div class="now-word" id="nowWord">Дорообо</div>
+            <div class="now-tr" id="nowTr">привет</div>
+            <div class="speak-row">
+              <button class="ghost" data-speak="" data-lang="sah"><svg class="ico"><use href="#i-sound"/></svg>саха</button>
+              <button class="ghost" data-speak="" data-lang="ru"><svg class="ico"><use href="#i-sound"/></svg>рус</button>
+              <button class="ghost" id="wNext"><svg class="ico"><use href="#i-refresh"/></svg>другое</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Поставить на экран</h3></div>
+            <ol class="steps-list">
+              <li>Нажми «Открыть виджет» — он работает без интернета.</li>
+              <li>В Safari: «Поделиться» → «На экран «Домой»».</li>
+              <li>В Chrome: меню ⋮ → «Добавить на главный экран».</li>
+              <li>Или сохрани картинку и поставь её обоями.</li>
+            </ol>
+            <div class="widget-actions">
+              <a class="btn" href="widget.html" target="_blank">Открыть виджет <svg><use href="#i-arrow"/></svg></a>
+              <button class="ghost" id="wDownload"><svg class="ico"><use href="#i-download"/></svg>Скачать PNG</button>
+            </div>
+            <p class="widget-note">Виджет-страница обновляет слово каждые 2 часа по времени телефона. Настоящий системный виджет iOS/Android требует нативного приложения — это следующий шаг.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ SETTINGS ============ -->
+    <!-- ============ FACTS ============ -->
+    <section class="page" data-page="facts">
+      <div class="page-head">
+        <div>
+          <h2>Интересные факты</h2>
+          <p>Якутия и история народа саха — коротко и наглядно</p>
+        </div>
+        <div class="filters" id="factFilters">
+          <button class="filter active" data-fcat="all">Все</button>
+          <button class="filter" data-fcat="nature">Якутия</button>
+          <button class="filter" data-fcat="culture">Культура</button>
+          <button class="filter" data-fcat="history">История</button>
+        </div>
+      </div>
+
+      <div class="fact-grid" id="factGrid">
+        {{FACT_CARDS}}
+      </div>
+
+      <p class="photo-credit">Фотографии — Wikimedia Commons: Оймякон, Ленские столбы, полярное сияние в Якутии, трубка «Мир», Якутск, сэргэ (мировое древо олонхо), ыһыах, варган, гравюра Якутского острога. Открытые лицензии CC BY / CC BY-SA.</p>
+
+      <div class="card history-card">
+        <div class="card-head"><h3>История народа саха</h3><span class="link">по датам</span></div>
+        <div class="timeline">
+          {{HISTORY_ROWS}}
+        </div>
+      </div>
+
+      <div class="card people-card">
+        <div class="card-head"><h3>Известные люди Якутии</h3><span class="link">писатели, спортсмены, кино</span></div>
+        <div class="people-grid">
+          {{PEOPLE_CARDS}}
+        </div>
+      </div>
+    </section>
+
+    <section class="page" data-page="settings">
+      <div class="page-head">
+        <div><h2>Настройки</h2><p>Подстрой приложение под себя</p></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>Внешний вид и звук</h3></div>
+          <div class="set-row">
+            <div class="txt"><b>Тёмная тема</b><small>Комфортно читать вечером</small></div>
+            <button class="switch" id="themeSwitch" aria-label="Тёмная тема"></button>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Звуки и озвучка</b><small>Произношение слов и звуковые отклики</small></div>
+            <button class="switch on" id="soundToggle" data-toggle aria-label="Звуки"></button>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Крупный текст</b><small>Увеличить шрифт интерфейса</small></div>
+            <button class="switch" id="bigText" aria-label="Крупный текст"></button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Обучение</h3></div>
+          <div class="set-row">
+            <div class="txt"><b>Напоминания</b><small>Каждый день в 19:00</small></div>
+            <button class="switch on" data-toggle aria-label="Напоминания"></button>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Перевод слов</b><small>Показывать русский перевод</small></div>
+            <select class="sel"><option>Русский</option><option>English</option><option>Саха тыла</option></select>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Цель дня</b><small>Сколько заниматься</small></div>
+            <select class="sel"><option>10 минут</option><option>15 минут</option><option>20 минут</option></select>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Возрастная группа</b><small>Определяет сложность заданий</small></div>
+            <select class="sel" id="ageSelect">
+              <option value="kid">6–9 лет</option>
+              <option value="teen">10–14 лет</option>
+              <option value="adult">15 лет и старше</option>
+            </select>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Скорость озвучки</b><small>Спокойный средний темп</small></div>
+            <select class="sel" id="rateSelect">
+              <option value="0.75">медленно</option>
+              <option value="0.9" selected>средне</option>
+              <option value="1.05">быстро</option>
+            </select>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Голос</b><small>Женский, плавный — из системы</small></div>
+            <select class="sel" id="voiceSelect"><option value="">системный</option></select>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Звуки якутского</b><small>Чей голос ближе для ө, ү, ҕ, һ, ҥ</small></div>
+            <select class="sel" id="ttsSelect">
+              <option value="auto">один голос (тюркский)</option>
+              <option value="ru">русский: ё, ю, нг (только если нет тюркского)</option>
+              <option value="tr">турецкий: ö, ü, ı</option>
+              <option value="az">азербайджанский: ö, ü, x</option>
+              <option value="kk">казахский: ө, ү, ң</option>
+            </select>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Демо-прогресс</b><small>Заполнить уроки и серию для показа</small></div>
+            <button class="ghost" id="demoBtn">Заполнить</button>
+          </div>
+          <div class="set-row">
+            <div class="txt"><b>Сбросить прогресс</b><small>Уроки, очки, достижения и слова</small></div>
+            <button class="ghost" id="resetBtn">Сбросить</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal-back" id="onboard">
+  <div class="modal">
+    <img class="m-orn" src="{{ORN}}" alt="">
+    <div class="mascot-hello">
+      <div class="mascot-ava"><img src="{{MASCOT_FACE}}" alt="Кыыс Куо"></div>
+      <div class="mascot-say"><b>Дорообо!</b> Мин Кыыс Куо — героиня олонхо. Пойдём учить саха тыла вместе.</div>
+    </div>
+    <h2>Сколько тебе лет?</h2>
+    <p>Задания подстроятся под возраст: число вариантов, длина фраз и подсказки. Ответ можно изменить в настройках.</p>
+    <div class="age-opts" id="ageOpts">
+      <button class="age-opt" data-group="kid" data-label="6–9 лет">6–9 лет<small>3 варианта ответа, короткие слова, подсказки</small></button>
+      <button class="age-opt" data-group="teen" data-label="10–14 лет">10–14 лет<small>4 варианта, сборка слов по буквам</small></button>
+      <button class="age-opt" data-group="adult" data-label="15–18 лет">15–18 лет<small>5 пар слов, сборка фраз из слов</small></button>
+      <button class="age-opt" data-group="adult" data-label="18+">18+<small>5 пар, полные фразы, без подсказок</small></button>
+    </div>
+    <button class="btn" id="ageGo" disabled>Продолжить <svg><use href="#i-arrow"/></svg></button>
+    <small class="hint">Уже доступны уроки 1–3: знакомства, бытовые фразы, мини-диалоги</small>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var $  = function(s,c){return (c||document).querySelector(s)};
+  var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement;
+  var themeBtn = $('#themeBtn'), themeIcon = $('#themeIcon').firstElementChild, themeSwitch = $('#themeSwitch');
+  function applyTheme(t){
+    root.setAttribute('data-theme', t);
+    themeIcon.setAttribute('href', t === 'dark' ? '#i-sun' : '#i-moon');
+    if (themeSwitch) themeSwitch.classList.toggle('on', t === 'dark');
+    try{ localStorage.setItem('sakha-theme', t) }catch(e){}
+  }
+  var saved = 'light';
+  try{ saved = localStorage.getItem('sakha-theme') || 'light' }catch(e){}
+  applyTheme(saved);
+  function toggleTheme(){
+    var t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(t);
+    toast(t === 'dark' ? 'Тёмная тема включена' : 'Светлая тема включена');
+  }
+  themeBtn.addEventListener('click', toggleTheme);
+  if (themeSwitch) themeSwitch.addEventListener('click', toggleTheme);
+
+  /* ---------- big text ---------- */
+  var big = $('#bigText');
+  if (big) big.addEventListener('click', function(){
+    big.classList.toggle('on');
+    var on = big.classList.contains('on');
+    document.body.style.fontSize = on ? '17px' : '';
+    root.style.setProperty('--scale-text', on ? '1.08' : '1');
+    document.body.style.zoom = on ? '1.06' : '';
+    toast(on ? 'Крупный текст включён' : 'Обычный размер текста');
+  });
+
+  /* ---------- generic switches ---------- */
+  $$('[data-toggle]').forEach(function(b){
+    b.addEventListener('click', function(){
+      b.classList.toggle('on');
+      toast(b.classList.contains('on') ? 'Включено' : 'Выключено');
+    });
+  });
+
+  /* ---------- navigation ---------- */
+  function go(name){
+    $$('.nav-item').forEach(function(n){ n.classList.toggle('active', n.dataset.go === name) });
+    $$('.page').forEach(function(p){ p.classList.toggle('active', p.dataset.page === name) });
+    window.scrollTo({top:0, behavior:'smooth'});
+    animateDonuts();
+    if (typeof window.__afterGo === 'function') window.__afterGo(name);
+  }
+  $$('[data-go]').forEach(function(el){
+    el.addEventListener('click', function(e){ e.preventDefault(); go(el.dataset.go) });
+  });
+
+  /* ---------- toasts ---------- */
+  var toastEl = $('#toast'), toastTimer;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show') }, 2600);
+  }
+  $$('[data-toast]').forEach(function(b){
+    b.addEventListener('click', function(){ toast(b.dataset.toast) });
+  });
+
+  /* ---------- donuts ---------- */
+  var C = 2 * Math.PI * 42;
+  function animateDonuts(){
+    $$('.donut .bar').forEach(function(c){
+      var v = parseFloat(c.dataset.value || '0');
+      c.style.strokeDasharray = C;
+      c.style.strokeDashoffset = C;
+      requestAnimationFrame(function(){
+        setTimeout(function(){ c.style.strokeDashoffset = C * (1 - v / 100) }, 60);
+      });
+    });
+  }
+  animateDonuts();
+
+  /* ---------- search ---------- */
+  var input = $('#search');
+  function norm(s){ return (s||'').toLowerCase().trim() }
+  input.addEventListener('input', function(){
+    var q = norm(input.value);
+    var shownLessons = 0, shownWords = 0;
+    $$('#homeLessons .lesson').forEach(function(card){
+      var hit = !q || norm(card.dataset.search).indexOf(q) > -1;
+      card.style.display = hit ? '' : 'none';
+      if (hit) shownLessons++;
+    });
+    $$('#wordList .word').forEach(function(row){
+      var hit = !q || norm(row.dataset.search).indexOf(q) > -1;
+      row.style.display = hit ? '' : 'none';
+      if (hit) shownWords++;
+    });
+    var empty = $('#homeEmpty');
+    if (empty) empty.style.display = shownLessons ? 'none' : 'block';
+    var wempty = $('#wordEmpty');
+    if (wempty) wempty.style.display = shownWords ? 'none' : 'block';
+  });
+
+  /* ---------- filters ---------- */
+  $$('.filters').forEach(function(group){
+    $$('.filter', group).forEach(function(f){
+      f.addEventListener('click', function(){
+        $$('.filter', group).forEach(function(x){ x.classList.remove('active') });
+        f.classList.add('active');
+        var q = norm(f.textContent);
+        $$('#allLessons .lesson-card').forEach(function(card){
+          var tags = norm(card.dataset.tags || '');
+          card.style.display = (!q || q === 'все' || tags.indexOf(q) > -1) ? '' : 'none';
+        });
+      });
+    });
+  });
+
+  window.App = { go: go, toast: toast, animateDonuts: animateDonuts };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Саха Тыл">
+<meta name="theme-color" content="#f7f8fb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141b2c" media="(prefers-color-scheme: dark)">
+<title>Саха Тыл · слово</title>
+<style>
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url(data:font/woff2;base64,{{FONT_CYR}}) format('woff2');
+  unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url(data:font/woff2;base64,{{FONT_LAT}}) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+
+:root{
+  --bg:#eef1f8;
+  --card:#ffffff;
+  --ink:#1f2b47;
+  --muted:#8b94aa;
+  --line:#e7ecf6;
+  --chip:#eef3fc;
+  --blue:#4a6bb5;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0f1522; --card:#1a2237; --ink:#e9eefb; --muted:#8d9ab7; --line:#26304a; --chip:#232e49; --blue:#8aa6e6; }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;display:grid;place-items:center;padding:14px;
+  background:var(--bg);color:var(--ink);
+  font-family:'Montserrat','Segoe UI',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.card{
+  width:min(100%,440px);min-height:min(100%,620px);
+  background:var(--card);border:1px solid var(--line);border-radius:30px;
+  padding:30px 26px 24px;display:flex;flex-direction:column;
+  box-shadow:0 24px 60px -34px rgba(30,45,80,.45);
+}
+.brand{
+  font-size:9.5px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;
+  color:var(--muted);text-align:center;
+}
+.center{margin:auto;text-align:center;padding:18px 0}
+.word{
+  font-size:clamp(32px,9.5vw,46px);line-height:1.12;font-weight:600;letter-spacing:-.8px;
+  color:var(--ink);word-break:break-word;cursor:pointer;transition:opacity .2s;
+}
+.word:active{opacity:.6}
+.tr{margin-top:10px;font-size:16px;font-weight:500;color:var(--muted)}
+.line{width:42px;height:2px;border-radius:2px;background:var(--line);margin:22px auto 0}
+.foot{
+  margin-top:18px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.hint{font-size:10.5px;font-weight:600;letter-spacing:.2px;color:var(--muted)}
+.btns{display:flex;gap:8px}
+.btns button{
+  font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.3px;
+  padding:9px 14px;border:0;border-radius:999px;background:var(--chip);color:var(--blue);
+  transition:transform .18s,background .18s,color .18s;cursor:pointer;
+}
+.btns button:active{transform:scale(.95)}
+.btns button:hover{background:var(--blue);color:#fff}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="brand">Саха тыл</div>
+  <div class="center">
+    <div class="word" id="word" title="Нажми, чтобы услышать">Дорообо</div>
+    <div class="tr" id="tr">привет</div>
+    <div class="line"></div>
+  </div>
+  <div class="foot">
+    <span class="hint" id="hint">смена через 2:00</span>
+    <div class="btns">
+      <button id="bSah">саха</button>
+      <button id="bRu">рус</button>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var WORDS = {{WORDS_JSON}};
+  var AUDIO = {{AUDIO_JSON}};
+  var SLOT = 2 * 60 * 60 * 1000;   /* слово меняется каждые 2 часа */
+  var RATE = 0.9;
+
+  var elWord = document.getElementById('word');
+  var elTr = document.getElementById('tr');
+  var elHint = document.getElementById('hint');
+
+  function slot() { return Math.floor(Date.now() / SLOT); }
+  function word() { return WORDS[slot() % WORDS.length]; }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  /* ---------- женский голос, средний темп ---------- */
+  var HINTS = ['milena', 'milana', 'irina', 'anna', 'anastasia', 'alena', 'alyona',
+    'katya', 'tatiana', 'tatyana', 'svetlana', 'elena', 'yandex', 'google', 'female'];
+  var voice = null;
+  function pick() {
+    if (voice) return voice;
+    var list = (speechSynthesis.getVoices() || []).filter(function (v) { return /^ru/i.test(v.lang); });
+    if (!list.length) return null;
+    list.sort(function (a, b) { return score(b) - score(a); });
+    voice = list[0];
+    return voice;
+  }
+  function score(v) {
+    var n = (v.name || '').toLowerCase(), s = 0, i;
+    for (i = 0; i < HINTS.length; i++) if (n.indexOf(HINTS[i]) > -1) { s += 6; break; }
+    if (v.localService) s += 1;
+    if (/^ru-RU$/i.test(v.lang)) s += 2;
+    return s;
+  }
+  var audioEl = null;
+  function recorded(text) {
+    var k = String(text || '').replace(/\s+/g, ' ').trim().replace(/[!?.,]+$/, '');
+    return AUDIO['sah|' + k] || '';
+  }
+  function playRecorded(src) {
+    if (!audioEl) audioEl = new Audio();
+    try { audioEl.pause(); audioEl.currentTime = 0; } catch (e) {}
+    audioEl.src = src; audioEl.playbackRate = 1;
+    var pr = audioEl.play(); if (pr && pr.catch) pr.catch(function () {});
+  }
+  function say(text, lang) {
+    if (lang === 'sah') {
+      var src = recorded(text);
+      if (src) {
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+        playRecorded(src);
+        return;
+      }
+    }
+    if (!('speechSynthesis' in window)) return;
+    try {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(String(text).replace(/[?!.,]$/g, ''));
+      u.rate = lang === 'sah' ? RATE - 0.05 : RATE;
+      u.pitch = 1.04;
+      var v = pick();
+      if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'ru-RU'; }
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = function () { voice = null; };
+  }
+
+  /* ---------- отрисовка ---------- */
+  var currentSlot = slot();
+  function paint() {
+    var w = word();
+    elWord.textContent = w.y;
+    elTr.textContent = w.ru;
+    tick();
+    document.title = w.y + ' — ' + w.ru;
+  }
+  function tick() {
+    var ms = SLOT - (Date.now() % SLOT);
+    var h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
+    elHint.textContent = 'смена через ' + (h ? h + ':' : '') + pad(m) + ' мин';
+    if (slot() !== currentSlot) { currentSlot = slot(); paint(); }
+  }
+
+  elWord.addEventListener('click', function () { say(word().y, 'sah'); });
+  document.getElementById('bSah').addEventListener('click', function () { say(word().y, 'sah'); });
+  document.getElementById('bRu').addEventListener('click', function () { say(word().ru, 'ru'); });
+
+  paint();
+  setInterval(tick, 20000);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) { currentSlot = slot(); paint(); }
+  });
+})();
+</script>
+</body>
+</html>
